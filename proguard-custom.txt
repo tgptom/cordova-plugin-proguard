@@ -113,6 +113,10 @@
 -keep class edu.umd.cs.findbugs.annotations.**
 -keep class org.bouncycastle.**
 
+-dontwarn com.google.crypto.tink.subtle.**
+-dontwarn edu.umd.cs.findbugs.annotations.**
+-dontwarn org.bouncycastle.**
+
 ##---------------Begin: proguard configuration for MSAL  --------
 -keep class com.microsoft.identity.** { *; }
 -keep class com.microsoft.device.display.** { *; }
