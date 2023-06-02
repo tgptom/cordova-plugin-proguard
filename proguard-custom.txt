@@ -109,9 +109,9 @@
 -keep class com.ionicframework.cordova.webview.** {*; }
 -keep class com.ionicframework.cordova.webview.*
 
--keep com.google.crypto.tink.subtle.**
--keep edu.umd.cs.findbugs.annotations.**
--keep org.bouncycastle.**
+-keep class com.google.crypto.tink.subtle.**
+-keep class edu.umd.cs.findbugs.annotations.**
+-keep class org.bouncycastle.**
 
 ##---------------Begin: proguard configuration for MSAL  --------
 -keep class com.microsoft.identity.** { *; }
