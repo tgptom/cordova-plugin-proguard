@@ -24,8 +24,8 @@ This plugin:
 
 ## Custom rules
 
-You can add project-specific rules by creating a `proguard-custom.txt` in your Cordova project root **before** installing the plugin.
-During install, `scripts/androidBeforeInstall.js` appends your project rules to the plugin defaults.
+You can add project-specific rules by creating a `proguard-custom.txt` in your Cordova project root.
+During prepare, `scripts/androidBeforeInstall.js` merges your project rules with the plugin defaults and writes the merged file to the Android platform assets.
 
 Example:
 
@@ -37,6 +37,7 @@ cat > proguard-custom.txt <<'EOF_RULES'
 EOF_RULES
 
 cordova plugin add cordova-plugin-proguard
+cordova prepare android
 ```
 
 ## Compatibility checks
