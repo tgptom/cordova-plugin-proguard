@@ -3,41 +3,65 @@
 [![NPM version][npm-image]][npm-url]
 [![npm](https://img.shields.io/npm/dm/cordova-plugin-proguard.svg)](https://www.npmjs.com/package/cordova-plugin-proguard)
 
-> Cordova plugin which activates ProGuard and minification for debug and release builds in your cordova mobile application.
+> Cordova plugin that enables Android code shrinking/obfuscation for **release** builds.
 
-## What is ProGuard?
+## Modern Android behavior (R8)
 
-> ProGuard is the open source optimizer for Java bytecode
+Recent `cordova-android` versions (including 14 and 15) build with modern Android Gradle Plugin versions that run **R8**.
+R8 accepts ProGuard-compatible rules, so this plugin still uses `proguard-custom.txt` rules.
 
-You can read more about it on [ProGuard official website](https://www.guardsquare.com/en/proguard) and on [android developer portal](https://developer.android.com/studio/build/shrink-code.html)
+## Installation
 
-## How to use
-
-- If you already have installed [Android Studio](https://developer.android.com/studio/index.html) then seems you already have installed ProGuard on your machine. If no, then  you should download and install it manually from [ProGuard official website](https://www.guardsquare.com/en/proguard).
-- ```cordova plugin add cordova-plugin-proguard``` - this command will configure your `build.gradle` file and copy `proguard-custom.txt` to `${androidPlatformDirectory}/assets/www/proguard-custom.txt`
-
-## Customization
-
-`proguard-custom.txt` file contains some basic rules for your cordova mobile app. Feel free to [fork this repo](https://github.com/greybax/cordova-plugin-proguard/fork) and modify it as you want. 
-
-You can also to check out some [Android ProGuard snippets](https://github.com/krschultz/android-proguard-snippets)
-
-If you want to add rules to this `proguard-custom.txt`, please create your own `proguard-custom.txt` and add this to your projectroot folder. 
-Upon installing the proguard-plugin, the rules will be added to your project.
-Example rules for various situations will be in the commented section in the plugin `proguard-custom.txt`.
-
+```bash
+cordova plugin add cordova-plugin-proguard
 ```
-ionic cordova platform rm android
-ionic cordova platform add android
+
+This plugin:
+- injects a Gradle reference (`build.gradle`) into Android builds;
+- keeps `debug` builds non-minified;
+- enables minification for `release` builds;
+- uses `src/main/assets/www/proguard-custom.txt` as the custom rules file.
+
+## Custom rules
+
+You can add project-specific rules by creating a `proguard-custom.txt` in your Cordova project root **before** installing the plugin.
+During install, `scripts/androidBeforeInstall.js` appends your project rules to the plugin defaults.
+
+Example:
+
+```bash
+# in your app project root
+cat > proguard-custom.txt <<'EOF_RULES'
+-keep class com.example.yourlib.** { *; }
+-dontwarn com.example.yourlib.**
+EOF_RULES
+
+cordova plugin add cordova-plugin-proguard
 ```
+
+## Compatibility checks
+
+Example commands to verify with recent Android platforms:
+
+```bash
+cordova platform rm android
+cordova platform add android@14
+cordova build android --release
+
+cordova platform rm android
+cordova platform add android@15
+cordova build android --release
+```
+
+## Notes
+
+- This plugin does **not** pin Cordova Android, Gradle, AGP, SDK, Kotlin, or Android Studio versions.
+- If your app/plugins use reflection-heavy SDKs, add app-specific keep rules.
 
 ## History
- - v1.0.0 - supports Cordova version <7
- - v2.0.0 - supports Cordova version 7+ (thanks to @SujitSingh)
 
-## Why I've done this plugin?
-
-https://alfilatov.com/posts/how-to-setup-proguard-in-cordova-application/
+- v1.0.0 - supports Cordova version < 7
+- v2.0.0 - supports Cordova version 7+
 
 ## License
 
