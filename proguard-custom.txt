@@ -38,36 +38,50 @@
 -keep class org.apache.cordova.ResumeCallback { org.apache.cordova.PluginManager pluginManager; }
 -keep class org.apache.cordova.engine.SystemWebViewEngine { org.apache.cordova.PluginManager pluginManager; }
 
-# Optional library/app-specific examples migrated from legacy defaults.
-# Uncomment only if your app uses the relevant SDK.
+# Backward-compatible app-specific rules that were enabled in previous releases.
 
-# Google Play services dynamite loader edge case:
-# -keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader {
-#     java.lang.ClassLoader sClassLoader;
-# }
+# Google Play services dynamite loader edge case.
+-keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader {
+    java.lang.ClassLoader sClassLoader;
+}
 
-# Ionic WebView plugin classes:
-# -keep class com.ionicframework.cordova.webview.** { *; }
+# Ionic WebView plugin classes.
+-keep class com.ionicframework.cordova.webview.** { *; }
+-keep class com.ionicframework.cordova.webview.*
 
-# Gson adapters/serializers:
-# -keep class * extends com.google.gson.TypeAdapter
-# -keep class * implements com.google.gson.TypeAdapterFactory
-# -keep class * implements com.google.gson.JsonSerializer
-# -keep class * implements com.google.gson.JsonDeserializer
-# -keepclassmembers,allowobfuscation class * {
-#   @com.google.gson.annotations.SerializedName <fields>;
-# }
+# Worklight / MobileFirst (legacy projects).
+-keep class com.worklight.androidgap.push.** { *; }
+-keep class com.worklight.wlclient.push.** { *; }
+-dontwarn com.worklight.common.internal.WLTrusteerInternal*
+-dontwarn com.worklight.jsonstore.**
+-dontwarn com.worklight.androidgap.push.GCMIntentService
+-dontwarn com.worklight.androidgap.plugin.WLInitializationPlugin
 
-# MSAL / Nimbus:
-# -keep class com.microsoft.identity.** { *; }
-# -keep class com.microsoft.device.display.** { *; }
-# -keep class com.nimbusds.** { *; }
+# SQLCipher.
+-keep class net.sqlcipher.** { *; }
+-dontwarn net.sqlcipher.**
 
-# Crypto stack examples:
-# -keep class com.google.crypto.tink.subtle.**
-# -keep class org.bouncycastle.**
-# -dontwarn com.google.crypto.tink.subtle.**
-# -dontwarn org.bouncycastle.**
+# MSAL / Nimbus.
+-keep class com.microsoft.identity.** { *; }
+-keep class com.microsoft.device.display.** { *; }
+-keep class com.nimbusds.** { *; }
+
+# Gson adapters/serializers.
+-keep class * extends com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Crypto stack examples.
+-keep class com.google.crypto.tink.subtle.**
+-keep class edu.umd.cs.findbugs.annotations.**
+-keep class org.bouncycastle.**
+-dontwarn com.google.crypto.tink.subtle.**
+-dontwarn edu.umd.cs.findbugs.annotations.**
+-dontwarn org.bouncycastle.**
 
 # Optional release-log stripping example:
 # -assumenosideeffects class android.util.Log {
