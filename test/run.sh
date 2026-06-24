@@ -92,6 +92,14 @@ EXTRA_RULES=$(<$CUSTOM_RULES)
 echo "Extra rules in proguard check"
 echo "$EXTRA_RULES"
 
+# check modern default rules were copied
+if grep "@android.webkit.JavascriptInterface" "$PROGUARD_CUSTOM_FILE" > /dev/null; then
+  echo "Modern default Cordova/WebView keep rule found."
+else
+  echo "ERROR: Modern default keep rules missing."
+  EXIT=1
+fi
+
 if grep "$EXTRA_RULES" "$PROGUARD_CUSTOM_FILE" > /dev/null; then
   echo "CUSTOM RULES successfully added has been setup."
 else

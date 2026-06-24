@@ -1,61 +1,36 @@
-# To enable ProGuard in your project, edit project.properties
-# to define the proguard.config property as described in that file.
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in ${sdk.dir}/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the ProGuard
-# include property in project.properties.
+# cordova-plugin-proguard default rules
 #
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Modern cordova-android builds use R8 through the Android Gradle Plugin.
+# R8 accepts ProGuard-compatible rules, so this file keeps conservative,
+# Cordova-focused defaults. Add project-specific rules in your app root
+# `proguard-custom.txt`; the install hook appends them to this file.
 
-# Add any project specific keep options here:
-#-dontshrink
-#-dontoptimize
-#-dontobfuscate
+# Keep metadata commonly needed by reflection, serializers, and stack traces.
+-keepattributes *Annotation*,InnerClasses,EnclosingMethod,Signature,SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class android.webkit.WebView {
-#   public *;
-#}
-
-#-injars      bin/classes
-#-injars      libs
-#-outjars     bin/classes-processed.jar
-
-# Using Google's License Verification Library 
--keep class com.android.vending.licensing.ILicensingService
-
-# Specifies to write out some more information during processing. 
-# If the program terminates with an exception, this option will print out the entire stack trace, instead of just the exception message.
--verbose
-
-# Annotations are represented by attributes that have no direct effect on the execution of the code. 
--keepattributes *Annotation*
-
+# Keep enum helper methods.
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
 
--keepattributes InnerClasses
+# Keep generated Android resource classes.
 -keep class **.R
 -keep class **.R$* {
     <fields>;
 }
 
-# These options let obfuscated applications or libraries produce stack traces that can still be deciphered later on 
--renamesourcefileattribute SourceFile    
--keepattributes SourceFile,LineNumberTable
-
-# Enable proguard with Cordova
+# Keep Cordova core and plugin entry points.
 -keep class org.apache.cordova.** { *; }
 -keep public class * extends org.apache.cordova.CordovaPlugin
 
--keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader { java.lang.ClassLoader sClassLoader; }
+# Keep JS bridge methods annotated for WebView interfaces.
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
 
+# Keep plugin manager references used by Cordova internals.
 -keep class org.apache.cordova.CordovaBridge { org.apache.cordova.PluginManager pluginManager; }
 -keep class org.apache.cordova.CordovaInterfaceImpl { org.apache.cordova.PluginManager pluginManager; }
 -keep class org.apache.cordova.CordovaResourceApi { org.apache.cordova.PluginManager pluginManager; }
@@ -63,91 +38,55 @@
 -keep class org.apache.cordova.ResumeCallback { org.apache.cordova.PluginManager pluginManager; }
 -keep class org.apache.cordova.engine.SystemWebViewEngine { org.apache.cordova.PluginManager pluginManager; }
 
--dontnote org.apache.harmony.xnet.provider.jsse.NativeCrypto
--dontnote sun.misc.Unsafe
+# Backward-compatible app-specific rules that were enabled in previous releases.
 
+-keep class com.android.vending.licensing.ILicensingService
+
+# Google Play services dynamite loader edge case.
+-keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader {
+    java.lang.ClassLoader sClassLoader;
+}
+
+# Ionic WebView plugin classes.
+-keep class com.ionicframework.cordova.webview.** { *; }
+-keep class com.ionicframework.cordova.webview.*
+
+# Worklight / MobileFirst (legacy projects).
 -keep class com.worklight.androidgap.push.** { *; }
 -keep class com.worklight.wlclient.push.** { *; }
-
-# Enable proguard with Google libs
--keep class com.google.** { *; }
--dontwarn com.google.common.**
--dontwarn com.google.ads.**
--dontwarn com.google.android.gms.**
--dontwarn com.google.auto.**
-
-# apache.http
--optimizations !class/merging/vertical*,!class/merging/horizontal*,!code/simplification/arithmetic,!field/*,!code/allocation/variable
-
--keep class net.sqlcipher.** { *; }
--dontwarn net.sqlcipher.**
-
--keep class org.codehaus.** { *; }
--keepattributes *Annotation*,EnclosingMethod
-
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
-# Remove debug logs in release build
--assumenosideeffects class android.util.Log {
-    public static *** d(...);
-}
-
-# These classes contain references to external jars which are not included in the default MobileFirst project.
 -dontwarn com.worklight.common.internal.WLTrusteerInternal*
 -dontwarn com.worklight.jsonstore.**
 -dontwarn org.codehaus.jackson.map.ext.*
 -dontwarn com.worklight.androidgap.push.GCMIntentService
 -dontwarn com.worklight.androidgap.plugin.WLInitializationPlugin
 
--dontwarn android.support.v4.**
--dontwarn android.net.SSLCertificateSocketFactory
--dontwarn android.net.http.*
+# SQLCipher.
+-keep class net.sqlcipher.** { *; }
+-dontwarn net.sqlcipher.**
 
-# These clases contain references to cordova webView
--keep class com.ionicframework.cordova.webview.** {*; }
--keep class com.ionicframework.cordova.webview.*
-
--keep class com.google.crypto.tink.subtle.**
--keep class edu.umd.cs.findbugs.annotations.**
--keep class org.bouncycastle.**
-
--dontwarn com.google.crypto.tink.subtle.**
--dontwarn edu.umd.cs.findbugs.annotations.**
--dontwarn org.bouncycastle.**
-
-##---------------Begin: proguard configuration for MSAL  --------
+# MSAL / Nimbus.
 -keep class com.microsoft.identity.** { *; }
 -keep class com.microsoft.device.display.** { *; }
-
-##---------------Begin: proguard configuration for Nimbus  ----------
 -keep class com.nimbusds.** { *; }
 
-##---------------Begin: proguard configuration for Gson  --------
-# Gson uses generic type information stored in a class file when working with fields. Proguard
-# removes such information by default, so configure it to keep all of it.
--keepattributes Signature
-
-# For using GSON @Expose annotation
--keepattributes *Annotation*
-
-# Gson specific classes
--dontwarn sun.misc.**
-#-keep class com.google.gson.stream.** { *; }
-
-# Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { <fields>; }
-
-# Prevent proguard from stripping interface information from TypeAdapter, TypeAdapterFactory,
-# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
+# Gson adapters/serializers.
 -keep class * extends com.google.gson.TypeAdapter
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
-
-# Prevent R8 from leaving Data object members always null
 -keepclassmembers,allowobfuscation class * {
   @com.google.gson.annotations.SerializedName <fields>;
 }
+
+# Crypto stack examples.
+-keep class com.google.crypto.tink.subtle.**
+-keep class edu.umd.cs.findbugs.annotations.**
+-keep class org.bouncycastle.**
+-dontwarn com.google.crypto.tink.subtle.**
+-dontwarn edu.umd.cs.findbugs.annotations.**
+-dontwarn org.bouncycastle.**
+
+# Optional release-log stripping example:
+# -assumenosideeffects class android.util.Log {
+#     public static *** d(...);
+# }

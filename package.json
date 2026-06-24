@@ -1,10 +1,10 @@
 {
   "name": "cordova-plugin-proguard",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Cordova plugin for ProGuard",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/greybax/cordova-plugin-proguard.git"
+    "url": "git+https://github.com/tgptom/cordova-plugin-proguard.git"
   },
   "keywords": [
     "proguard",
@@ -24,9 +24,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/greybax/cordova-plugin-proguard/issues"
+    "url": "https://github.com/tgptom/cordova-plugin-proguard/issues"
   },
-  "homepage": "https://github.com/greybax/cordova-plugin-proguard#readme",
+  "homepage": "https://github.com/tgptom/cordova-plugin-proguard#readme",
   "devDependencies": {
     "jshint": "2.13.6"
   }
