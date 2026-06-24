@@ -40,6 +40,8 @@
 
 # Backward-compatible app-specific rules that were enabled in previous releases.
 
+-keep class com.android.vending.licensing.ILicensingService
+
 # Google Play services dynamite loader edge case.
 -keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader {
     java.lang.ClassLoader sClassLoader;
@@ -54,6 +56,7 @@
 -keep class com.worklight.wlclient.push.** { *; }
 -dontwarn com.worklight.common.internal.WLTrusteerInternal*
 -dontwarn com.worklight.jsonstore.**
+-dontwarn org.codehaus.jackson.map.ext.*
 -dontwarn com.worklight.androidgap.push.GCMIntentService
 -dontwarn com.worklight.androidgap.plugin.WLInitializationPlugin
 
