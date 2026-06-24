@@ -5,8 +5,9 @@
 # Cordova-focused defaults. Add project-specific rules in your app root
 # `proguard-custom.txt`; the install hook appends them to this file.
 
-# Keep annotation metadata used by reflection/serializers.
--keepattributes *Annotation*,InnerClasses,EnclosingMethod,Signature
+# Keep metadata commonly needed by reflection, serializers, and stack traces.
+-keepattributes *Annotation*,InnerClasses,EnclosingMethod,Signature,SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
 # Keep enum helper methods.
 -keepclassmembers enum * {
@@ -37,7 +38,38 @@
 -keep class org.apache.cordova.ResumeCallback { org.apache.cordova.PluginManager pluginManager; }
 -keep class org.apache.cordova.engine.SystemWebViewEngine { org.apache.cordova.PluginManager pluginManager; }
 
-# Optional project/app-specific examples (uncomment if needed):
-# -keep class com.google.gson.** { *; }
+# Optional library/app-specific examples migrated from legacy defaults.
+# Uncomment only if your app uses the relevant SDK.
+
+# Google Play services dynamite loader edge case:
+# -keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader {
+#     java.lang.ClassLoader sClassLoader;
+# }
+
+# Ionic WebView plugin classes:
+# -keep class com.ionicframework.cordova.webview.** { *; }
+
+# Gson adapters/serializers:
+# -keep class * extends com.google.gson.TypeAdapter
+# -keep class * implements com.google.gson.TypeAdapterFactory
+# -keep class * implements com.google.gson.JsonSerializer
+# -keep class * implements com.google.gson.JsonDeserializer
+# -keepclassmembers,allowobfuscation class * {
+#   @com.google.gson.annotations.SerializedName <fields>;
+# }
+
+# MSAL / Nimbus:
 # -keep class com.microsoft.identity.** { *; }
+# -keep class com.microsoft.device.display.** { *; }
+# -keep class com.nimbusds.** { *; }
+
+# Crypto stack examples:
+# -keep class com.google.crypto.tink.subtle.**
+# -keep class org.bouncycastle.**
+# -dontwarn com.google.crypto.tink.subtle.**
 # -dontwarn org.bouncycastle.**
+
+# Optional release-log stripping example:
+# -assumenosideeffects class android.util.Log {
+#     public static *** d(...);
+# }
