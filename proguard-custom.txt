@@ -25,6 +25,11 @@
 -keep class org.apache.cordova.** { *; }
 -keep public class * extends org.apache.cordova.CordovaPlugin
 
+# Keep the application ID read reflectively by plugins such as cordova-plugin-app-update.
+-keep class **.BuildConfig {
+    public static final java.lang.String APPLICATION_ID;
+}
+
 # Keep JS bridge methods annotated for WebView interfaces.
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;

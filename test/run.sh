@@ -100,6 +100,14 @@ else
   EXIT=1
 fi
 
+if grep -F -A 2 -- '-keep class **.BuildConfig {' "$PROGUARD_CUSTOM_FILE" |
+    grep -Fq 'public static final java.lang.String APPLICATION_ID;'; then
+  echo "BuildConfig.APPLICATION_ID compatibility keep rule found."
+else
+  echo "ERROR: BuildConfig.APPLICATION_ID keep rule missing."
+  EXIT=1
+fi
+
 if grep "$EXTRA_RULES" "$PROGUARD_CUSTOM_FILE" > /dev/null; then
   echo "CUSTOM RULES successfully added has been setup."
 else

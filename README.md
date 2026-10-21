@@ -27,6 +27,8 @@ This plugin:
 You can add project-specific rules by creating a `proguard-custom.txt` in your Cordova project root.
 During prepare, `scripts/androidBeforeInstall.js` merges your project rules with the plugin defaults and writes the merged file to the Android platform assets.
 
+The defaults preserve `BuildConfig.APPLICATION_ID` for plugins that read it reflectively, such as `cordova-plugin-app-update`, so no extra rule is needed for this safeguard.
+
 Example:
 
 ```bash
